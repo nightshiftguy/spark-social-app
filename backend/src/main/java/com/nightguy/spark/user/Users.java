@@ -1,4 +1,4 @@
-package com.nightguy.springjwttemplate.user;
+package com.nightguy.spark.user;
 
 import java.util.List;
 

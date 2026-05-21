@@ -1,4 +1,4 @@
-package com.nightguy.springjwttemplate.auth;
+package com.nightguy.spark.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

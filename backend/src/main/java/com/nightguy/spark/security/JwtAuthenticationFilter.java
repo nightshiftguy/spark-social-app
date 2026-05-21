@@ -1,4 +1,4 @@
-package com.nightguy.springjwttemplate.security;
+package com.nightguy.spark.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

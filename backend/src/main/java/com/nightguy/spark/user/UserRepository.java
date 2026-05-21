@@ -1,4 +1,4 @@
-package com.nightguy.springjwttemplate.user;
+package com.nightguy.spark.user;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,5 +6,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 public interface UserRepository extends JpaRepository<User, Long> {
-  Optional<User> findByLogin(String login);
+  Optional<User> findByUsername(String username);
 }

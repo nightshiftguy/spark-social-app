@@ -1,4 +1,4 @@
-package com.nightguy.springjwttemplate.exception;
+package com.nightguy.spark.exception;
 
 import java.util.Map;
 import java.util.stream.Collectors;

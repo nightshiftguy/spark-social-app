@@ -1,7 +1,7 @@
-package com.nightguy.springjwttemplate.security;
+package com.nightguy.spark.security;
 
-import com.nightguy.springjwttemplate.user.Role;
-import com.nightguy.springjwttemplate.user.UserRepository;
+import com.nightguy.spark.user.Role;
+import com.nightguy.spark.user.UserRepository;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,11 +40,9 @@ public class SecurityConfig {
         .cors((cors) -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/api/auth/**", "/api/weather/**")
+                auth.requestMatchers("/api/open-endpoint/**")
                     .permitAll()
-                    .requestMatchers("/api/admin-contacts/**", "/api/users/**")
-                    .hasAuthority(Role.ADMIN.name())
-                    .requestMatchers("/api/contacts/**")
+                    .requestMatchers("/api/user-and-admin/**")
                     .hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                     .anyRequest()
                     .authenticated())
@@ -77,7 +75,7 @@ public class SecurityConfig {
   public UserDetailsService userDetailsService() {
     return login ->
         repository
-            .findByLogin(login)
+            .findByUsername(login)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 

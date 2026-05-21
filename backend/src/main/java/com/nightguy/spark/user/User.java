@@ -1,34 +1,38 @@
-package com.nightguy.springjwttemplate.user;
+package com.nightguy.spark.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
-import lombok.Data;
+import java.util.Objects;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "users")
 public class User implements UserDetails {
-  @Id @GeneratedValue private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
   @NotBlank private String username;
   @NotNull private String password;
-  @NotNull private Boolean enabled;
 
-  @NotBlank
+  @NotNull
   @Enumerated(EnumType.STRING)
   private Role role;
 
-  public User(Role role, Boolean enabled, String password, String username) {
+  public User(Role role, String password, String username) {
     this.role = role;
-    this.enabled = enabled;
     this.password = password;
     this.username = username;
   }
@@ -51,7 +55,19 @@ public class User implements UserDetails {
   }
 
   @Override
-  public boolean isEnabled() {
-    return enabled;
+  public String toString() {
+    return "User{" + "id=" + id + ", username='" + username + '\'' + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return Objects.equals(id, user.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
   }
 }

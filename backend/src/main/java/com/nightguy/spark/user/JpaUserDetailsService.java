@@ -1,4 +1,4 @@
-package com.nightguy.springjwttemplate.user;
+package com.nightguy.spark.user;
 
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
@@ -18,7 +18,7 @@ public class JpaUserDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 
     return userRepository
-        .findByLogin(login)
+        .findByUsername(login)
         .orElseThrow(() -> new UsernameNotFoundException("User not found: " + login));
   }
 }

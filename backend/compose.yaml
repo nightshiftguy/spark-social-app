@@ -1,9 +1,16 @@
 services:
   postgres:
     image: 'postgres:latest'
+    restart: 'unless-stopped'
+    container_name: 'spark-db'
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - POSTGRES_DB=spark
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=spark_user
     ports:
-      - '5432'
+      - '5432:5432'
+    volumes:
+      - 'spark_db_data:/var/lib/postgresql/data-flyway'
+
+volumes:
+  spark_db_data:

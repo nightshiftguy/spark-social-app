@@ -1,10 +1,10 @@
-package com.nightguy.springjwttemplate.security;
+package com.nightguy.spark.security;
 
-import com.nightguy.springjwttemplate.auth.AuthenticationRequest;
-import com.nightguy.springjwttemplate.auth.AuthenticationResponse;
-import com.nightguy.springjwttemplate.user.Role;
-import com.nightguy.springjwttemplate.user.User;
-import com.nightguy.springjwttemplate.user.UserRepository;
+import com.nightguy.spark.auth.AuthenticationRequest;
+import com.nightguy.spark.auth.AuthenticationResponse;
+import com.nightguy.spark.user.Role;
+import com.nightguy.spark.user.User;
+import com.nightguy.spark.user.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,13 +23,12 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
 
   public AuthenticationResponse register(AuthenticationRequest request) {
-    Optional<User> optionalUser = repository.findByLogin(request.getLogin());
+    Optional<User> optionalUser = repository.findByUsername(request.getLogin());
     if (optionalUser.isPresent()) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "User with this login already exists");
     } else {
       User user =
-          new User(
-              Role.USER, false, passwordEncoder.encode(request.getPassword()), request.getLogin());
+          new User(Role.USER, passwordEncoder.encode(request.getPassword()), request.getLogin());
       repository.save(user);
       return AuthenticationResponse.builder().token(jwtService.generateToken(user)).build();
     }
@@ -44,7 +43,7 @@ public class AuthenticationService {
     }
     var user =
         repository
-            .findByLogin(request.getLogin())
+            .findByUsername(request.getLogin())
             .orElseThrow(() -> new IllegalStateException("User missing after authentication"));
 
     return AuthenticationResponse.builder().token(jwtService.generateToken(user)).build();

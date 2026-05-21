@@ -1,4 +1,4 @@
-package com.nightguy.springjwttemplate.security;
+package com.nightguy.spark.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
