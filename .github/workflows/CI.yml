@@ -28,14 +28,19 @@ jobs:
     - name: Install JDK
       uses: actions/setup-java@v5
       with:
-        distribution: 'temurin'
-        java-version: '21'
+        distribution: 'liberica'
+        java-version: '26'
+        cache: 'maven'
     - name: Start database
       run: docker compose up -d
     - name: Wait for database
       run: sleep 10
     - name: Lint project
       run: mvn spotless:check
+    - name: Flyway migrate
+      run: mvn -B flyway:migrate
+    - name: Flyway validate
+      run: mvn -B flyway:validate
     - name: Run Tests
       run: mvn test
     - name: Stop database

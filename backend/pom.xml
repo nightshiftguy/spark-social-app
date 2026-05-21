@@ -131,6 +131,19 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>11.14.1</version>
+                <configuration>
+                    <user>spark_user</user>
+                    <password>password</password>
+                    <url>jdbc:postgresql://localhost:5432/spark</url>
+                    <schemas>
+                        <schema>spark-flyway</schema>
+                    </schemas>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>3.4.0</version>
