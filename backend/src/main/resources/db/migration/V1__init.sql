@@ -14,6 +14,7 @@ CREATE TABLE posts (
     deletion_timestamp TIMESTAMP NULL,
     text_content TEXT NOT NULL,
     image_link TEXT NULL,
+    like_count INTEGER NOT NULL,
     user_id BIGINT NOT NULL REFERENCES users (id)
 );
 CREATE TABLE comments (
@@ -28,8 +29,6 @@ CREATE TABLE reactions (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     reaction reaction_type NOT NULL,
     user_id BIGINT NOT NULL REFERENCES users (id),
-    comment_id BIGINT NULL REFERENCES comments (id),
     post_id BIGINT NULL REFERENCES posts (id),
-    UNIQUE(user_id, post_id),
-    UNIQUE(user_id, comment_id)
+    UNIQUE(user_id, post_id)
 );

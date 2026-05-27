@@ -1,11 +1,16 @@
 package com.nightguy.spark.user;
 
+import com.nightguy.spark.comment.Comment;
+import com.nightguy.spark.post.Post;
+import com.nightguy.spark.reaction.Reaction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -24,12 +29,27 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank private String username;
+  @NotBlank
+  @Column(unique = true, length = 16)
+  private String username;
+
   @NotNull private String password;
+
+  @Column(columnDefinition = "TEXT")
+  private String profilePictureLink;
 
   @NotNull
   @Enumerated(EnumType.STRING)
   private Role role;
+
+  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+  private Set<Post> posts;
+
+  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+  private Set<Comment> comments;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private Set<Reaction> reactions;
 
   public User(Role role, String password, String username) {
     this.role = role;
