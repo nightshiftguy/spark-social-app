@@ -1,5 +1,5 @@
-CREATE TYPE user_role AS ENUM ('user', 'admin');
-CREATE TYPE reaction_type AS ENUM ('like');
+CREATE TYPE user_role AS ENUM ('USER', 'ADMIN');
+CREATE TYPE reaction_type AS ENUM ('LIKE');
 
 CREATE TABLE users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

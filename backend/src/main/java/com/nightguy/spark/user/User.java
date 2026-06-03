@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -48,7 +47,7 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
   private Set<Comment> comments;
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
   private Set<Reaction> reactions;
 
   public User(Role role, String password, String username) {

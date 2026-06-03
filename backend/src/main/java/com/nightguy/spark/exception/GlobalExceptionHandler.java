@@ -14,7 +14,10 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<Map<String, String>> handle(ResponseStatusException ex) {
-    return ResponseEntity.status(ex.getStatusCode()).body(Map.of("message", ex.getReason()));
+    if (ex.getReason() != null) {
+      return ResponseEntity.status(ex.getStatusCode()).body(Map.of("message", ex.getReason()));
+    }
+    return ResponseEntity.status(ex.getStatusCode()).body(null);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

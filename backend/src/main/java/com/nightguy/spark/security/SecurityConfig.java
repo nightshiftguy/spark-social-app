@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,15 +36,22 @@ public class SecurityConfig {
   String[] allowedOrigins;
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors((cors) -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/api/open-endpoint/**")
+                auth.requestMatchers("/api/v1/auth/**")
                     .permitAll()
-                    .requestMatchers("/api/user-and-admin/**")
-                    .hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/v1/posts/**",
+                        "/api/v1/comments/**",
+                        "/api/v1/reactions/**")
+                    .permitAll()
+                    .requestMatchers(
+                        "/api/v1/posts/**", "/api/v1/comments/**", "/api/v1/reactions/**")
+                    .hasAuthority(Role.USER.name())
                     .anyRequest()
                     .authenticated())
         .sessionManagement(
@@ -87,8 +95,7 @@ public class SecurityConfig {
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-      throws Exception {
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
     return config.getAuthenticationManager();
   }
 

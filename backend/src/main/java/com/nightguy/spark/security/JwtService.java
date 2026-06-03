@@ -1,5 +1,6 @@
 package com.nightguy.spark.security;
 
+import com.nightguy.spark.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -16,8 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
   private final SecretKey secretKey;
+  private final UserRepository userRepository;
 
-  public JwtService(@Value("${spring.jwt.secret_key}") String secret) {
+  public JwtService(
+      @Value("${spring.jwt.secret_key}") String secret, UserRepository userRepository) {
     byte[] keyBytes = Decoders.BASE64.decode(secret);
 
     if (keyBytes.length < 32) {
@@ -25,6 +28,7 @@ public class JwtService {
     }
 
     this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+    this.userRepository = userRepository;
   }
 
   public String extractUsername(String token) {
@@ -52,7 +56,11 @@ public class JwtService {
 
   public boolean isTokenValid(String token, UserDetails userDetails) {
     final String username = extractUsername(token);
-    return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+
+    // TODO delete last condition with userRepository and implement refresh tokens
+    return (username.equals(userDetails.getUsername()))
+        && !isTokenExpired(token)
+        && userRepository.findByUsername(username).isPresent();
   }
 
   private boolean isTokenExpired(String token) {
