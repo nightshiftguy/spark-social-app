@@ -1,8 +1,8 @@
 package com.nightguy.spark.reaction;
 
 import com.nightguy.spark.user.User;
-import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +22,9 @@ public class ReactionController {
   }
 
   @GetMapping
-  List<ReactionResponseDTO> getAllReactions(@PathVariable Long postId) {
-    return reactionService.getAllReactionsForPost(postId);
+  Page<ReactionResponseDTO> getAllReactions(
+      @PathVariable Long postId, @RequestParam(defaultValue = "0") int page) {
+    return reactionService.getAllReactionsForPost(postId, page);
   }
 
   @PutMapping
@@ -34,9 +35,9 @@ public class ReactionController {
     return reactionService.updateReaction(user, newReaction, postId);
   }
 
-  @DeleteMapping("{reactionId}")
+  @DeleteMapping()
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  void deleteReaction(@AuthenticationPrincipal User user, @PathVariable Long reactionId) {
-    reactionService.deleteReaction(user, reactionId);
+  void deleteReaction(@AuthenticationPrincipal User user, @PathVariable Long postId) {
+    reactionService.deleteReaction(user, postId);
   }
 }

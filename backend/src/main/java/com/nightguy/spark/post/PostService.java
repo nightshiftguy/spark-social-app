@@ -2,8 +2,12 @@ package com.nightguy.spark.post;
 
 import com.nightguy.spark.user.User;
 import jakarta.validation.Valid;
-import java.util.List;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,8 +19,24 @@ public class PostService {
   private final PostRepository postRepository;
   private final PostMapper postMapper;
 
-  public List<PostResponseDTO> getAllPosts() {
-    return postRepository.findAll().stream().map(postMapper::toDto).toList();
+  public Page<PostResponseDTO> getAllPosts(int page, String sortBy, String sortDirection) {
+    // validate parameters
+    String[] validSortCategories = {"creationTimestamp", "likeCount"};
+    String[] validSortDirection = {"asc", "desc"};
+    if (page < 0) throw new IllegalArgumentException("Invalid request param page");
+    if (Arrays.stream(validSortCategories).noneMatch((s) -> s.equals(sortBy))) {
+      throw new IllegalArgumentException("Invalid request param sortBy");
+    }
+    if (Arrays.stream(validSortDirection).noneMatch((s) -> s.equalsIgnoreCase(sortDirection))) {
+      throw new IllegalArgumentException("Invalid request param sortDirection");
+    }
+
+    Sort.Direction direction =
+        sortDirection.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+    Sort sort = Sort.by(direction, sortBy);
+    Pageable pageable = PageRequest.of(page, 10, sort);
+
+    return postRepository.findAll(pageable).map(postMapper::toDto);
   }
 
   public PostResponseDTO getPost(Long id) {

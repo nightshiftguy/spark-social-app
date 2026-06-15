@@ -5,8 +5,10 @@ import com.nightguy.spark.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,8 +29,10 @@ public class CommentService {
     return commentMapper.toDto(commentRepository.save(newComment));
   }
 
-  public List<CommentResponseDTO> getAllCommentsForPost(Long postId) {
-    return commentRepository.findAllByPost_Id(postId).stream().map(commentMapper::toDto).toList();
+  public Page<CommentResponseDTO> getAllCommentsForPost(Long postId, int pageNumber) {
+    if (pageNumber < 0) throw new IllegalArgumentException("Invalid request param page");
+    Pageable pageable = PageRequest.of(pageNumber, 10);
+    return commentRepository.findAllByPost_Id(postId, pageable).map(commentMapper::toDto);
   }
 
   public CommentResponseDTO updateComment(

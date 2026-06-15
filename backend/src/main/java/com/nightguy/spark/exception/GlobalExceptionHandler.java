@@ -2,6 +2,8 @@ package com.nightguy.spark.exception;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,8 +28,19 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().stream()
             .collect(
                 Collectors.toMap(
-                    FieldError::getField, FieldError::getDefaultMessage, (first, second) -> first));
+                    // replacing null with "" for toMap function
+                    FieldError::getField,
+                    fieldError -> {
+                      var message = fieldError.getDefaultMessage();
+                      return message != null ? message : "";
+                    },
+                    (first, _) -> first));
 
     return ResponseEntity.badRequest().body(errors);
+  }
+
+  @ExceptionHandler(ConversionFailedException.class)
+  public ResponseEntity<String> handleConflict(RuntimeException ex) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
   }
 }

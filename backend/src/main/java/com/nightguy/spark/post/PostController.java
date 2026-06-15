@@ -1,8 +1,8 @@
 package com.nightguy.spark.post;
 
 import com.nightguy.spark.user.User;
-import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +20,11 @@ public class PostController {
   }
 
   @GetMapping
-  List<PostResponseDTO> getPosts() {
-    return postService.getAllPosts();
+  Page<PostResponseDTO> getPosts(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "creationTimestamp") String sortBy,
+      @RequestParam(defaultValue = "DESC") String sortDirection) {
+    return postService.getAllPosts(page, sortBy, sortDirection);
   }
 
   @GetMapping("/{id}")

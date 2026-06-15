@@ -31,7 +31,11 @@ public class Post {
 
   @NotNull private Instant creationTimestamp;
   private Instant deletionTimestamp;
-  @NotBlank private String textContent;
+
+  @NotBlank
+  @Column(length = 300)
+  private String textContent;
+
   @NotNull private Integer likeCount = 0;
 
   @Column(columnDefinition = "TEXT")

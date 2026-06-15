@@ -1,3 +1,6 @@
 package com.nightguy.spark.comment;
 
-public record CommentRequestDTO(String textContent) {}
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record CommentRequestDTO(@NotBlank @Size(max = 200) String textContent) {}

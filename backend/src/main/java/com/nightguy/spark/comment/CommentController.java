@@ -1,8 +1,8 @@
 package com.nightguy.spark.comment;
 
 import com.nightguy.spark.user.User;
-import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +23,9 @@ public class CommentController {
   }
 
   @GetMapping
-  List<CommentResponseDTO> getAllComments(@PathVariable Long postId) {
-    return commentService.getAllCommentsForPost(postId);
+  Page<CommentResponseDTO> getAllComments(
+      @PathVariable Long postId, @RequestParam(defaultValue = "0") int page) {
+    return commentService.getAllCommentsForPost(postId, page);
   }
 
   @PutMapping("{commentId}")
