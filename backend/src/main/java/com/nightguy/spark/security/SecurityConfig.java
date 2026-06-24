@@ -59,12 +59,9 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider())
         .addFilterBefore(
-            jwtAuthenticationFilter(userDetailsService),
-            UsernamePasswordAuthenticationFilter.class)
+            jwtAuthenticationFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(
-                rateLimitingFilter(rateLimitingService),
-                UsernamePasswordAuthenticationFilter.class
-        );
+            rateLimitingFilter(rateLimitingService), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 
@@ -96,9 +93,10 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  //Add filters as beans instead of components for testing (ensure @AutoConfigureMockMvc(addFilters = false) don't break this config)
+  // Add filters as beans instead of components for testing (ensure @AutoConfigureMockMvc(addFilters
+  // = false) don't break this config)
   @Bean
-  public RateLimitingFilter rateLimitingFilter(RateLimitingService rateLimitingService){
+  public RateLimitingFilter rateLimitingFilter(RateLimitingService rateLimitingService) {
     return new RateLimitingFilter(rateLimitingService);
   }
 
