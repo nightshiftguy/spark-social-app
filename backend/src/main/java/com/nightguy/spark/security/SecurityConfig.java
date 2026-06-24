@@ -1,7 +1,8 @@
 package com.nightguy.spark.security;
 
+import com.nightguy.spark.rateLimiting.RateLimitingFilter;
+import com.nightguy.spark.rateLimiting.RateLimitingService;
 import com.nightguy.spark.user.Role;
-import com.nightguy.spark.user.UserRepository;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,8 +29,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-  private final UserRepository repository;
+  private final JpaUserDetailsService userDetailsService;
   private final JwtService jwtService;
+  private final RateLimitingService rateLimitingService;
 
   @Value("${spring.cors.allowed-origins}")
   String[] allowedOrigins;
@@ -58,8 +59,12 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider())
         .addFilterBefore(
-            jwtAuthenticationFilter(userDetailsService()),
-            UsernamePasswordAuthenticationFilter.class);
+            jwtAuthenticationFilter(userDetailsService),
+            UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(
+                rateLimitingFilter(rateLimitingService),
+                UsernamePasswordAuthenticationFilter.class
+        );
     return http.build();
   }
 
@@ -75,21 +80,8 @@ public class SecurityConfig {
   }
 
   @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter(UserDetailsService userDetailsService) {
-    return new JwtAuthenticationFilter(jwtService, userDetailsService);
-  }
-
-  @Bean
-  public UserDetailsService userDetailsService() {
-    return login ->
-        repository
-            .findByUsername(login)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-  }
-
-  @Bean
   public AuthenticationProvider authenticationProvider() {
-    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
+    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
     authProvider.setPasswordEncoder(passwordEncoder());
     return authProvider;
   }
@@ -102,5 +94,16 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  //Add filters as beans instead of components for testing (ensure @AutoConfigureMockMvc(addFilters = false) don't break this config)
+  @Bean
+  public RateLimitingFilter rateLimitingFilter(RateLimitingService rateLimitingService){
+    return new RateLimitingFilter(rateLimitingService);
+  }
+
+  @Bean
+  public JwtAuthenticationFilter jwtAuthenticationFilter(UserDetailsService userDetailsService) {
+    return new JwtAuthenticationFilter(jwtService, userDetailsService);
   }
 }

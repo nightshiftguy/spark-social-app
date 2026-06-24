@@ -1,5 +1,6 @@
-package com.nightguy.spark.user;
+package com.nightguy.spark.security;
 
+import com.nightguy.spark.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.UserDetails;

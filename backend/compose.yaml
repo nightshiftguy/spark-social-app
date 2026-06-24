@@ -12,5 +12,11 @@ services:
     volumes:
       - 'spark_db_data:/var/lib/postgresql/data-flyway'
 
+  redis:
+    image: 'redis:latest'
+    container_name: 'spark-cache'
+    ports:
+      - '6379:6379'
+
 volumes:
   spark_db_data:

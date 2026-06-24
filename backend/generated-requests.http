@@ -1,0 +1,91 @@
+###
+POST http://localhost:8080/api/v1/posts
+Content-Type: application/x-www-form-urlencoded
+
+###
+GET http://localhost:8080/api/v1/posts
+
+<> 2026-06-24T113413.200.json
+<> 2026-06-15T130207.200.json
+<> 2026-06-15T122257.200.json
+<> 2026-06-15T122237.200.json
+<> 2026-06-15T122221.200.json
+<> 2026-06-15T122131.200.json
+<> 2026-06-15T121927.200.json
+<> 2026-06-15T121840.200.json
+<> 2026-06-15T121438.200.json
+<> 2026-06-14T000625.200.json
+<> 2026-06-14T000538.200.json
+<> 2026-06-13T222435.200.json
+<> 2026-06-13T213300.200.json
+
+###
+GET http://localhost:8080/api/v1/posts/1/comments
+
+###
+GET http://localhost:8080/api/v1/posts/1/reactions?page=0
+
+<> 2026-06-15T121700.200.json
+<> 2026-06-15T121656.200.json
+<> 2026-06-15T121650.200.json
+<> 2026-06-15T121611.200.json
+
+###
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{"login":"bob_builder", "password":"password123"}
+
+<> 2026-06-15T121708.200.json
+<> 2026-06-15T121417.200.json
+<> 2026-06-15T121409.200.json
+
+###
+PUT http://localhost:8080/api/v1/posts/11
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib2JfYnVpbGRlciIsImlhdCI6MTc4MTI1NTM1NiwiZXhwIjoxNzgxMzQxNzU2fQ.33nYTOHAVC_UrDy5EGciYcsDjImziAf2pz6m1USSDN0
+
+{"textContent" :"building something new..."}
+
+###
+DELETE http://localhost:8080/api/v1/posts/10
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib2JfYnVpbGRlciIsImlhdCI6MTc4MTI1NTM1NiwiZXhwIjoxNzgxMzQxNzU2fQ.33nYTOHAVC_UrDy5EGciYcsDjImziAf2pz6m1USSDN0
+
+###
+GET http://localhost:8080/api/v1/posts/1/reactions
+Content-Type: application/json
+
+<> 2026-06-15T122102.200.json
+<> 2026-06-13T213312.200.json
+
+###
+POST http://localhost:8080/api/v1/posts/2/reactions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib2JfYnVpbGRlciIsImlhdCI6MTc4MTUxODYyOCwiZXhwIjoxNzgxNjA1MDI4fQ.l1-n-AlY3f9ci5qw_NCYdhSSMwmP7i5lpGGeZgdH_F4
+
+{
+  "reaction": "LIKE"
+}
+
+<> 2026-06-15T122250.200.json
+<> 2026-06-15T122027.200.json
+<> 2026-06-15T121749.200.json
+<> 2026-06-13T213258.401.txt
+
+###
+PUT http://localhost:8080/api/v1/posts/11/comments/14
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib2JfYnVpbGRlciIsImlhdCI6MTc4MTI1NTM1NiwiZXhwIjoxNzgxMzQxNzU2fQ.33nYTOHAVC_UrDy5EGciYcsDjImziAf2pz6m1USSDN0
+
+{
+  "textContent": "good job :)"
+}
+
+<> 2026-06-24T113410.401.txt
+<> 2026-06-13T213246.401.txt
+
+###
+GET http://localhost:8080/api/v1/posts/1/comments?sortBy=textContent
+
+<> 2026-06-13T214002.200.json
+<> 2026-06-13T213918.200.json
