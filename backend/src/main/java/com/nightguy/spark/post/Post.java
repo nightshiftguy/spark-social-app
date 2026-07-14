@@ -1,6 +1,7 @@
 package com.nightguy.spark.post;
 
 import com.nightguy.spark.comment.Comment;
+import com.nightguy.spark.image.ImageUrl;
 import com.nightguy.spark.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -38,8 +39,8 @@ public class Post {
 
   @NotNull private Integer likeCount = 0;
 
-  @Column(columnDefinition = "TEXT")
-  private String imageLink;
+  @OneToOne(mappedBy = "post", cascade = CascadeType.MERGE, orphanRemoval = true)
+  private ImageUrl imageLink;
 
   @ManyToOne
   @JoinColumn(

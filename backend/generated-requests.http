@@ -85,7 +85,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib2JfYnVpbGRlciIsImlhdCI6M
 <> 2026-06-13T213246.401.txt
 
 ###
-GET http://localhost:8080/api/v1/posts/1/comments?sortBy=textContent
+GET http://localhost:8080/api/v1/posts/2/comments?sortBy=textContent
 
 <> 2026-06-13T214002.200.json
 <> 2026-06-13T213918.200.json
+
+###
+GET http://localhost:8080/api/v1/posts/2/image/sign
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib2JfYnVpbGRlciIsImlhdCI6MTc4Mzc2NjY2MywiZXhwIjoxNzgzODUzMDYzfQ.7GdwyrjsVm1Wdz7N1pOfN6cIYb3QolkXb_3Z9xm6-JA

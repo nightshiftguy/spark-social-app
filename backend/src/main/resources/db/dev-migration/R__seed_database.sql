@@ -8,15 +8,15 @@ INSERT INTO users (username, password, profile_picture_link, role) VALUES
 ('frank_castle', '$2a$10$q/YZmCbwU51.1nzs7W61h.vgNJpnu1zri/npngyYeVelprMfJVsYe', NULL, 'USER');
 
 -- Posts (some with images, some text-only, one soft-deleted)
-INSERT INTO posts (creation_timestamp, deletion_timestamp, text_content, image_link, like_count, user_id) VALUES
-('2025-01-10 08:30:00', NULL,'Just joined this platform, excited to be here!', 'post_image_link_1', 5, 1),
-('2025-01-11 10:15:00', NULL,'Working on a new project today, wish me luck!', NULL, 3, 2),
-('2025-01-11 12:00:00', NULL,'Beautiful morning for a walk in the park.', 'post_image_link_3', 12, 3),
-('2025-01-12 09:45:00', NULL,'Anyone else think that coffee is life?', 'post_image_link_4', 8, 4),
-('2025-01-12 14:20:00', NULL,'Hot take: tabs are better than spaces. Fight me.', NULL, 20, 1),
-('2025-01-13 11:00:00', '2025-01-13 18:00:00','This post was removed by the author.', NULL, 0, 2),
-('2025-01-14 16:30:00', NULL,'Sharing some thoughts on software architecture patterns.', 'post_image_link_7', 7, 5),
-('2025-01-15 08:00:00', NULL,'Good morning everyone! Hope your day is productive.', NULL, 4, 6);
+INSERT INTO posts (creation_timestamp, deletion_timestamp, text_content, like_count, user_id) VALUES
+('2025-01-10 08:30:00', NULL,'Just joined this platform, excited to be here!', 5, 1),
+('2025-01-11 10:15:00', NULL,'Working on a new project today, wish me luck!', 3, 2),
+('2025-01-11 12:00:00', NULL,'Beautiful morning for a walk in the park.', 12, 3),
+('2025-01-12 09:45:00', NULL,'Anyone else think that coffee is life?', 8, 4),
+('2025-01-12 14:20:00', NULL,'Hot take: tabs are better than spaces. Fight me.', 20, 1),
+('2025-01-13 11:00:00', '2025-01-13 18:00:00','This post was removed by the author.', 0, 2),
+('2025-01-14 16:30:00', NULL,'Sharing some thoughts on software architecture patterns.', 7, 5),
+('2025-01-15 08:00:00', NULL,'Good morning everyone! Hope your day is productive.', 4, 6);
 
 -- Comments (some posts have multiple, deleted post has none)
 INSERT INTO comments (creation_timestamp, deletion_timestamp, text_content, user_id, post_id) VALUES

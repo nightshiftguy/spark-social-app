@@ -1,8 +1,13 @@
 package com.nightguy.spark.post;
 
+import com.nightguy.spark.image.ImageUrl;
+import com.nightguy.spark.image.ImageUrlRepository;
 import com.nightguy.spark.user.User;
 import jakarta.validation.Valid;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class PostService {
   // TODO try to optimize to avoid N + 1 database requests (finding and then deleting)
   private final PostRepository postRepository;
+  private final ImageUrlRepository imageUrlRepository;
   private final PostMapper postMapper;
 
   public Page<PostResponseDTO> getAllPosts(int page, String sortBy, String sortDirection) {
@@ -48,8 +54,29 @@ public class PostService {
   }
 
   public PostResponseDTO save(User user, @Valid PostRequestDTO newPostDto) {
+
     Post newPost = postMapper.toEntity(newPostDto);
     newPost.setAuthor(user);
+
+    //check if image specified in link exists and belongs to user
+    if(newPostDto.imageLink() != null){
+      ImageUrl image = imageUrlRepository.findByImageLink(newPostDto.imageLink())
+              .orElseThrow(
+                      ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image with this url don't exist")
+              );
+
+      if(
+              !image.getOwner().equals(user) || //check if image belongs to user
+              image.getPost() != null           //check if image isn't attached to post
+      ){
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid image url");
+      }
+
+      //update image
+      image.setPost(newPost);
+      newPost.setImageLink(image);
+    }
+
     Post postResponse = postRepository.save(newPost);
     return postMapper.toDto(postResponse);
   }
@@ -64,8 +91,29 @@ public class PostService {
     if (!oldPost.getAuthor().equals(user)) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
+
     // modify post
     Post postEntity = postMapper.updateEntityFromDto(oldPost, newPostDto);
+
+    //check if image specified in link exists and belongs to user
+    if(newPostDto.imageLink() != null){
+      ImageUrl image = imageUrlRepository.findByImageLink(newPostDto.imageLink())
+              .orElseThrow(
+                      ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image with this url don't exist")
+              );
+      //validate image
+      if(
+              !image.getOwner().equals(user) ||           //check if image belongs to user
+              image.getPost() != null &&
+              !Objects.equals(image.getPost().getId(), id) //check if post referred in image has same id as post to update
+      ){
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid image url");
+      }
+
+      image.setPost(postEntity);
+      postEntity.setImageLink(image);
+    }
+
     return postMapper.toDto(postRepository.save(postEntity));
   }
 
