@@ -14,27 +14,27 @@ import org.springframework.stereotype.Component;
 @Profile("dev")
 public class NgrokTunnelRunner implements ApplicationRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(NgrokTunnelRunner.class);
-    @Value("${NGROK_TUNNEL_URL}")
-    private String ngrokTunnelURL;
-    private Process process;
+  private static final Logger log = LoggerFactory.getLogger(NgrokTunnelRunner.class);
 
-    @Override
-    public void run(@NonNull ApplicationArguments args) throws Exception {
-        ProcessBuilder pb = new ProcessBuilder(
-                "ngrok", "http", "--url="+ngrokTunnelURL, "8080"
-        );
-        pb.redirectErrorStream(true);
-        process = pb.start();
+  @Value("${NGROK_TUNNEL_URL}")
+  private String ngrokTunnelURL;
 
-        log.info("Public ngrok dev URL: {}", ngrokTunnelURL);
-        log.info("For debugging see ngrok web inspector at: http://127.0.0.1:4040/inspect/http");
+  private Process process;
+
+  @Override
+  public void run(@NonNull ApplicationArguments args) throws Exception {
+    ProcessBuilder pb = new ProcessBuilder("ngrok", "http", "--url=" + ngrokTunnelURL, "8080");
+    pb.redirectErrorStream(true);
+    process = pb.start();
+
+    log.info("Public ngrok dev URL: {}", ngrokTunnelURL);
+    log.info("For debugging see ngrok web inspector at: http://127.0.0.1:4040/inspect/http");
+  }
+
+  @PreDestroy
+  public void shutdown() {
+    if (process != null) {
+      process.destroy();
     }
-
-    @PreDestroy
-    public void shutdown() {
-        if (process != null) {
-            process.destroy();
-        }
-    }
+  }
 }

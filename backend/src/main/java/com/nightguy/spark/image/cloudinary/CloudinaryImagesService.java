@@ -4,7 +4,6 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.api.signing.NotificationRequestSignatureVerifier;
 import com.cloudinary.utils.ObjectUtils;
 import jakarta.annotation.PostConstruct;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +28,11 @@ public class CloudinaryImagesService {
   @Value("${CLOUD_UPLOAD_LOCATION}")
   private String cloudUploadLocation;
 
-  private static final String UPLOAD_FOLDER = "images";
-  private static final String UPLOAD_PRESET = "public-images";
+  @Value("${CLOUD_UPLOAD_FOLDER}")
+  private String uploadFolder = "images";
+
+  @Value("${CLOUD_UPLOAD_PRESET}")
+  private String uploadPreset = "public-images";
 
   @Value("${CLOUD_MAX_TIME_FOR_IMAGE_CONFIRMATION_SECONDS}")
   private long secondsValidFor;
@@ -49,17 +51,17 @@ public class CloudinaryImagesService {
     verifier = new NotificationRequestSignatureVerifier(apiSecret);
   }
 
-  protected UUID getUUIDFromRequestString(String requestPublicId){
+  protected UUID getUUIDFromRequestString(String requestPublicId) {
     // convert publicId (foldername/<UUID>) to just UUID: delete foldername.length (+1 to delete /)
-    return UUID.fromString(requestPublicId.substring(UPLOAD_FOLDER.length() + 1));
+    return UUID.fromString(requestPublicId.substring(uploadFolder.length() + 1));
   }
 
   protected SignResponseDTO signRequest(UUID publicId) {
     Map<String, Object> signParameters = new HashMap<>();
     long timestampUnixTime = System.currentTimeMillis() / 1000L;
-    signParameters.put("folder", UPLOAD_FOLDER);
+    signParameters.put("folder", uploadFolder);
     signParameters.put("timestamp", timestampUnixTime);
-    signParameters.put("upload_preset", UPLOAD_PRESET);
+    signParameters.put("upload_preset", uploadPreset);
     signParameters.put("public_id", publicId.toString());
     String signature = cloudinary.apiSignRequest(signParameters, apiSecret, 1);
 
@@ -68,19 +70,17 @@ public class CloudinaryImagesService {
         signature,
         Long.toString(timestampUnixTime),
         apiKey,
-        UPLOAD_FOLDER,
+        uploadFolder,
         publicId.toString(),
-        UPLOAD_PRESET);
+        uploadPreset);
   }
 
   protected void cloudinaryDeleteImage(UUID publicId) throws IOException {
-    cloudinary.uploader().destroy(UPLOAD_FOLDER+"/"+publicId.toString(), ObjectUtils.emptyMap());
+    cloudinary.uploader().destroy(uploadFolder + "/" + publicId.toString(), ObjectUtils.emptyMap());
   }
 
   protected boolean isConfirmationRequestValid(
       String requestBody, String timestamp, String signature) {
     return verifier.verifySignature(requestBody, timestamp, signature, secondsValidFor);
   }
-
-
 }

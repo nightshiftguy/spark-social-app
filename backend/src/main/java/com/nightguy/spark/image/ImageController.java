@@ -1,6 +1,5 @@
 package com.nightguy.spark.image;
 
-import com.nightguy.spark.image.cloudinary.CloudinaryImagesService;
 import com.nightguy.spark.image.cloudinary.ImagesService;
 import com.nightguy.spark.image.cloudinary.SignResponseDTO;
 import com.nightguy.spark.user.User;
@@ -25,7 +24,7 @@ public class ImageController {
   }
 
   @DeleteMapping("posts/{postId}/image")
-  void deleteImage(@AuthenticationPrincipal User user, @PathVariable long postId){
-     imageService.deleteImage(user, postId);
+  void deleteImage(@AuthenticationPrincipal User user, @PathVariable long postId) {
+    imageService.deleteImage(user, postId);
   }
 }

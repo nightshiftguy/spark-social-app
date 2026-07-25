@@ -4,7 +4,6 @@ import com.nightguy.spark.post.Post;
 import com.nightguy.spark.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -28,16 +27,18 @@ public class ImageUrl {
 
   @NotNull private Instant creationTimestamp;
 
-  @NotNull @Column(unique = true) private UUID publicId;
+  @NotNull
+  @Column(unique = true)
+  private UUID publicId;
 
   @Column(columnDefinition = "TEXT", unique = true)
   private String imageLink;
 
   @ManyToOne
   @JoinColumn(
-          name = "owner_id",
-          nullable = false,
-          foreignKey = @ForeignKey(name = "image_urls_user_id_fkey"))
+      name = "owner_id",
+      nullable = false,
+      foreignKey = @ForeignKey(name = "image_urls_user_id_fkey"))
   private User owner;
 
   @OneToOne
