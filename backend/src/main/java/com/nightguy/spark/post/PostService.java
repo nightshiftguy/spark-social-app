@@ -6,7 +6,6 @@ import com.nightguy.spark.user.User;
 import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +23,19 @@ public class PostService {
   private final PostRepository postRepository;
   private final ImageUrlRepository imageUrlRepository;
   private final PostMapper postMapper;
+
+  private ImageUrl findImageForUser(User user, String imageUrl){
+    ImageUrl image = imageUrlRepository.findByImageLink(imageUrl)
+            .orElseThrow(
+                    ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image with this url don't exist")
+            );
+
+    //check if image belongs to user
+    if(!image.getOwner().equals(user)){
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid image url");
+    }
+    return image;
+  }
 
   public Page<PostResponseDTO> getAllPosts(int page, String sortBy, String sortDirection) {
     // validate parameters
@@ -54,21 +66,15 @@ public class PostService {
   }
 
   public PostResponseDTO save(User user, @Valid PostRequestDTO newPostDto) {
-
     Post newPost = postMapper.toEntity(newPostDto);
     newPost.setAuthor(user);
 
     //check if image specified in link exists and belongs to user
     if(newPostDto.imageLink() != null){
-      ImageUrl image = imageUrlRepository.findByImageLink(newPostDto.imageLink())
-              .orElseThrow(
-                      ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image with this url don't exist")
-              );
+      ImageUrl image = findImageForUser(user, newPostDto.imageLink());
 
-      if(
-              !image.getOwner().equals(user) || //check if image belongs to user
-              image.getPost() != null           //check if image isn't attached to post
-      ){
+      //check if image isn't attached to post
+      if(image.getPost() != null){
         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid image url");
       }
 
@@ -97,19 +103,17 @@ public class PostService {
 
     //check if image specified in link exists and belongs to user
     if(newPostDto.imageLink() != null){
-      ImageUrl image = imageUrlRepository.findByImageLink(newPostDto.imageLink())
-              .orElseThrow(
-                      ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image with this url don't exist")
-              );
-      //validate image
+      ImageUrl image = findImageForUser(user, newPostDto.imageLink());
+
+      //check if post referred in image has same id as post to update
       if(
-              !image.getOwner().equals(user) ||           //check if image belongs to user
               image.getPost() != null &&
-              !Objects.equals(image.getPost().getId(), id) //check if post referred in image has same id as post to update
+              !Objects.equals(image.getPost().getId(), id)
       ){
         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid image url");
       }
 
+      //update image
       image.setPost(postEntity);
       postEntity.setImageLink(image);
     }

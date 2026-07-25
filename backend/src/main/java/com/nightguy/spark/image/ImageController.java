@@ -1,6 +1,7 @@
 package com.nightguy.spark.image;
 
 import com.nightguy.spark.image.cloudinary.CloudinaryImagesService;
+import com.nightguy.spark.image.cloudinary.ImagesService;
 import com.nightguy.spark.image.cloudinary.SignResponseDTO;
 import com.nightguy.spark.user.User;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/")
 @RequiredArgsConstructor
 public class ImageController {
-  private final CloudinaryImagesService imageService;
+  private final ImagesService imageService;
 
   @GetMapping("posts/{postId}/image/sign")
   SignResponseDTO signRequest(@AuthenticationPrincipal User user, @PathVariable long postId) {

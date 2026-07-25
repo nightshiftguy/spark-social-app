@@ -1,7 +1,7 @@
 package com.nightguy.spark.webhooks;
 
-import com.nightguy.spark.image.cloudinary.CloudinaryImagesService;
 import com.nightguy.spark.image.cloudinary.ConfirmationRequestDTO;
+import com.nightguy.spark.image.cloudinary.ImagesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import tools.jackson.databind.json.JsonMapper;
 @RequestMapping("/webhooks")
 @RequiredArgsConstructor
 public class WebhookController {
-  private final CloudinaryImagesService imageService;
+  private final ImagesService imageService;
   private final JsonMapper jsonMapper;
 
   @RequestMapping(
