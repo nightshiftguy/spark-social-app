@@ -1,6 +1,7 @@
 package com.nightguy.spark.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,10 +24,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-      HttpServletRequest request,
+      @NonNull HttpServletRequest request,
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain)
-      throws ServletException, IOException {
+      throws IOException, ServletException {
     try {
       final String authHeader = request.getHeader("Authorization");
       final String jwt;
@@ -51,7 +52,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       filterChain.doFilter(request, response);
     } catch (ExpiredJwtException e) {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.setContentType("application/json");
       response.getWriter().write("{\"message\":\"JWT token has expired\"}");
+    } catch (JwtException | IllegalArgumentException e) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.setContentType("application/json");
+      response.getWriter().write("{\"message\":\"Invalid JWT token\"}");
     }
   }
 }
