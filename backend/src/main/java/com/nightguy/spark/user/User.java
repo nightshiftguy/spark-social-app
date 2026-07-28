@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnTransformer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,6 +40,7 @@ public class User implements UserDetails {
 
   @NotNull
   @Enumerated(EnumType.STRING)
+  @ColumnTransformer(write = "?::user_role")
   private Role role;
 
   @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
