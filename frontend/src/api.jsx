@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export function useApiFetch(route, options={}) {
+export function useApiFetch(route, options={}, dontFetchYet=false) {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -18,6 +18,10 @@ export function useApiFetch(route, options={}) {
 
   useEffect(() => {
     async function fetchData() {
+    if(dontFetchYet===true) {
+      setLoading(false);
+      return;
+    }
     if(route===null) {
       setLoading(false);
       return;
@@ -65,7 +69,7 @@ export function useApiFetch(route, options={}) {
     }
   }
   fetchData();
-  }, [route, options, navigate, handleTokenExpiration]);
+  }, [route, options, navigate, handleTokenExpiration, dontFetchYet]);
 
   return { data, error, loading, status };
 }

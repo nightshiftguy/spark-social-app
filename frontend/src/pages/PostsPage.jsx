@@ -1,17 +1,15 @@
 import { useApiFetch } from '../api';
 import { useMemo } from 'react';
+import Post from '../components/Post';
 
 function PostsPage() {
    const routeAndOptions = useMemo(()=>{return { route: "posts", options: {} }}, []);
    const {data, error, loading} = useApiFetch(routeAndOptions.route, routeAndOptions.options);
-   console.log(data)
   return (
     <>
-      <h1>PostsPage</h1>
+      <h2>Posts</h2>
       {loading && <p>Loading...</p>}
-      {data?.content?.map(post => (
-        <div key={post.id}>{post.textContent}</div>
-      ))}
+      {data?.content?.map((post) =><Post key={post.id} post={post}/>)}
       {error && <p>A network error was encountered: {error.message}</p>}
     </>
   )

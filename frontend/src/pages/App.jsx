@@ -1,11 +1,16 @@
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
+import NavBar from '../components/NavBar'
+import '../main.css'
 
 function App() {
+  const location = useLocation();
   return (
     <>
-      <h1>App</h1>
-      <main>
-        <Outlet/>
+      <NavBar location={location}/>
+      <main className='container'>
+        <div>
+          <Outlet />
+        </div>
       </main>
     </>
   )
