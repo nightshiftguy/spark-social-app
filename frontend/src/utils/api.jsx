@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
+import getPayloadFromJWT from "./getPayloadFromJWT";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -27,6 +28,19 @@ export function useApiFetch(route, options={}, dontFetchYet=false, requestParame
       return;
     }
     const token = localStorage.getItem('token');
+
+    //validate token expiration before calling api
+    if(token){
+      const payload = getPayloadFromJWT(token);
+
+      const expiration = new Date(parseInt(payload.exp)*1000);
+      const timeLeftMinutes = (expiration.getTime() - (new Date()).getTime()) / (1000*60*60)
+
+      if( timeLeftMinutes <= 0 ){
+        handleTokenExpiration();
+      }
+    }
+
     try {
       const res = await fetch(API_URL + route + (()=>{return requestParameters !==null ? ("?" + new URLSearchParams(requestParameters).toString()) : ""})(), {
         ...options,

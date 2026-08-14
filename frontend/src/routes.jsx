@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import PostsPage from "./pages/PostsPage";
 import MyAccountPage from "./pages/MyAccountPage";
+import Logout from "./pages/Logout";
 
 const routes = [
     {
@@ -31,6 +32,10 @@ const routes = [
             {
                 path: 'my-account',
                 element: <MyAccountPage/>
+            },
+            {
+                path: 'logout',
+                element: <Logout/>
             }
         ]
     }

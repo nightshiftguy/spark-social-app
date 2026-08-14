@@ -1,4 +1,4 @@
-import { useApiFetch } from '../api';
+import { useApiFetch } from '../utils/api';
 import { useMemo, useState, useEffect } from 'react';
 import Post from '../components/Post';
 

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react"
-import { useApiFetch } from '../api';
+import { useApiFetch } from '../utils/api';
 
 export default function Comments({postId}){
     const [isCollapsed, setCollapsed] = useState(true);
