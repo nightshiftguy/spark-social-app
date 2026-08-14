@@ -31,7 +31,7 @@ public class CommentService {
 
   public Page<CommentResponseDTO> getAllCommentsForPost(Long postId, int pageNumber) {
     if (pageNumber < 0) throw new IllegalArgumentException("Invalid request param page");
-    Pageable pageable = PageRequest.of(pageNumber, 10);
+    Pageable pageable = PageRequest.of(pageNumber, 5);
     return commentRepository.findAllByPost_Id(postId, pageable).map(commentMapper::toDto);
   }
 

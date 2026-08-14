@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export function useApiFetch(route, options={}, dontFetchYet=false) {
+export function useApiFetch(route, options={}, dontFetchYet=false, requestParameters=null) {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ export function useApiFetch(route, options={}, dontFetchYet=false) {
     }
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(API_URL + route, {
+      const res = await fetch(API_URL + route + (()=>{return requestParameters !==null ? ("?" + new URLSearchParams(requestParameters).toString()) : ""})(), {
         ...options,
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export function useApiFetch(route, options={}, dontFetchYet=false) {
     }
   }
   fetchData();
-  }, [route, options, navigate, handleTokenExpiration, dontFetchYet]);
+  }, [route, options, navigate, handleTokenExpiration, dontFetchYet, requestParameters]);
 
   return { data, error, loading, status };
 }

@@ -59,7 +59,7 @@ public class ReactionService {
     if (pageNumber < 0) throw new IllegalArgumentException("Invalid request param pageNumber");
     // sort by author
     Sort sort = Sort.by(Sort.Direction.ASC, "author");
-    Pageable pageable = PageRequest.of(pageNumber, 10, sort);
+    Pageable pageable = PageRequest.of(pageNumber, 5, sort);
     return reactionRepository.findAllByPost_Id(postId, pageable).map(reactionMapper::toDto);
   }
 
@@ -67,7 +67,7 @@ public class ReactionService {
     if (pageNumber < 0) throw new IllegalArgumentException("Invalid request param pageNumber");
     // sort from latest to oldest
     Sort sort = Sort.by(Sort.Direction.DESC, "creationTimestamp");
-    Pageable pageable = PageRequest.of(pageNumber, 10, sort);
+    Pageable pageable = PageRequest.of(pageNumber, 5, sort);
     return reactionRepository.findAllByAuthor(user, pageable).map(reactionMapper::toDto);
   }
 
