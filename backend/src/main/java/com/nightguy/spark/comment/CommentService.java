@@ -4,7 +4,6 @@ import com.nightguy.spark.post.Post;
 import com.nightguy.spark.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,8 +19,7 @@ public class CommentService {
   private final CommentRepository commentRepository;
   @PersistenceContext private EntityManager em;
 
-  public CommentResponseDTO createComment(
-      User user, @Valid CommentRequestDTO newCommentDto, Long postId) {
+  public CommentResponseDTO createComment(User user, CommentRequestDTO newCommentDto, Long postId) {
     Comment newComment = commentMapper.toEntity(newCommentDto);
     newComment.setAuthor(user);
     newComment.setPost(em.getReference(Post.class, postId));
@@ -36,7 +34,7 @@ public class CommentService {
   }
 
   public CommentResponseDTO updateComment(
-      User user, @Valid CommentRequestDTO newCommentDto, Long commentId) {
+      User user, CommentRequestDTO newCommentDto, Long commentId) {
     // find comment
     Comment oldComment =
         commentRepository

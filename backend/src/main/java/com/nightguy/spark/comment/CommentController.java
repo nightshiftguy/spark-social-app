@@ -1,6 +1,7 @@
 package com.nightguy.spark.comment;
 
 import com.nightguy.spark.user.User;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ public class CommentController {
   @PostMapping
   CommentResponseDTO createComment(
       @AuthenticationPrincipal User user,
-      @RequestBody CommentRequestDTO newComment,
+      @Valid @RequestBody CommentRequestDTO newComment,
       @PathVariable Long postId) {
     System.out.println(user.getAuthorities());
     return commentService.createComment(user, newComment, postId);
@@ -31,7 +32,7 @@ public class CommentController {
   @PutMapping("{commentId}")
   CommentResponseDTO updateComment(
       @AuthenticationPrincipal User user,
-      @RequestBody CommentRequestDTO newComment,
+      @Valid @RequestBody CommentRequestDTO newComment,
       @PathVariable Long commentId) {
     return commentService.updateComment(user, newComment, commentId);
   }

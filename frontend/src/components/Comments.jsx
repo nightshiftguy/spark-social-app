@@ -6,16 +6,16 @@ export default function Comments({postId}){
 
     const routeAndOptions = useMemo(()=>{return { route: "posts/" + postId +"/comments", options: {} }}, [postId]);
     const [currentPage, setCurrentPage] = useState(0);
-   const parameters = useMemo(()=>{return { page: currentPage }}, [currentPage]);
+    const parameters = useMemo(()=>{return { page: currentPage }}, [currentPage]);
     const {data, error, loading} = useApiFetch(routeAndOptions.route, routeAndOptions.options, isCollapsed, parameters);
     const [comments, setComments] = useState(new Map());
 
     useEffect(()=>{
-        setComments(prev => {
+        (()=>{setComments(prev => {
           const next = new Map(prev);
           (data?.content ?? []).forEach(comment => next.set(comment.id, comment));
           return next;
-        });
+        });})();
        },[data])
 
     return (

@@ -5,7 +5,6 @@ import com.nightguy.spark.post.PostRepository;
 import com.nightguy.spark.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +25,7 @@ public class ReactionService {
 
   @Transactional
   public ReactionResponseDTO saveReaction(
-      User user, @Valid ReactionRequestDTO newReactionDto, Long postId) {
+      User user, ReactionRequestDTO newReactionDto, Long postId) {
     // prevent user from reacting twice to same post
     if (reactionRepository.findByAuthorAndPost_Id(user, postId).isPresent()) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -45,7 +44,7 @@ public class ReactionService {
   }
 
   public ReactionResponseDTO updateReaction(
-      User user, @Valid ReactionRequestDTO newReactionDto, Long postId) {
+      User user, ReactionRequestDTO newReactionDto, Long postId) {
     Reaction oldReaction =
         reactionRepository
             .findByAuthorAndPost_Id(user, postId)

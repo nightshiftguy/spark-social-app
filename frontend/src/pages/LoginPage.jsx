@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useApiFetch } from '../utils/api';
 import { useNavigate, useOutletContext } from 'react-router';
-import getPayloadFromJWT from '../utils/getPayloadFromJWT';
+import extractUsernameFromJWT from '../utils/extractUsernameFromJWT';
 
 function LoginPage() {
-  const { isLogged, setIsLogged, loggedUserUsername, setLoggedUserUsername } = useOutletContext();
+  const { setIsLogged, setLoggedUserUsername } = useOutletContext();
   const [routeAndOptions, setRouteAndOptions] = useState({ route: null, options: {} });
   const {data, error, loading, status} = useApiFetch(routeAndOptions.route, routeAndOptions.options);
   const navigate = useNavigate();
 
   useEffect(() => {
     if((!error && status===200)) {
-      const username = getPayloadFromJWT(data.token).sub;
+      if(!data.token){ throw new error("No token provided after user logged in")}
+      const username = extractUsernameFromJWT(data.token);
       setLoggedUserUsername(username);
       localStorage.setItem('token', data.token);
       setIsLogged(true);

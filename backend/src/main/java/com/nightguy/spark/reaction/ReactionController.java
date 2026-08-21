@@ -1,6 +1,7 @@
 package com.nightguy.spark.reaction;
 
 import com.nightguy.spark.user.User;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ public class ReactionController {
   @PostMapping
   ReactionResponseDTO createReaction(
       @AuthenticationPrincipal User user,
-      @RequestBody ReactionRequestDTO newReaction,
+      @Valid @RequestBody ReactionRequestDTO newReaction,
       @PathVariable Long postId) {
     return reactionService.saveReaction(user, newReaction, postId);
   }
@@ -30,7 +31,7 @@ public class ReactionController {
   @PutMapping
   ReactionResponseDTO updateReaction(
       @AuthenticationPrincipal User user,
-      @RequestBody ReactionRequestDTO newReaction,
+      @Valid @RequestBody ReactionRequestDTO newReaction,
       @PathVariable Long postId) {
     return reactionService.updateReaction(user, newReaction, postId);
   }

@@ -3,7 +3,6 @@ package com.nightguy.spark.post;
 import com.nightguy.spark.image.ImageUrl;
 import com.nightguy.spark.image.ImageUrlRepository;
 import com.nightguy.spark.user.User;
-import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -67,7 +66,7 @@ public class PostService {
     return postMapper.toDto(newPost);
   }
 
-  public PostResponseDTO save(User user, @Valid PostRequestDTO newPostDto) {
+  public PostResponseDTO save(User user, PostRequestDTO newPostDto) {
     Post newPost = postMapper.toEntity(newPostDto);
     newPost.setAuthor(user);
 
@@ -89,7 +88,7 @@ public class PostService {
     return postMapper.toDto(postResponse);
   }
 
-  public PostResponseDTO updatePost(User user, Long id, @Valid PostRequestDTO newPostDto) {
+  public PostResponseDTO updatePost(User user, Long id, PostRequestDTO newPostDto) {
     // find post
     Post oldPost =
         postRepository

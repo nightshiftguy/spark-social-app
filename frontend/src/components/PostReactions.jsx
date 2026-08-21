@@ -6,16 +6,16 @@ export default function PostLikes({postId, likeCount}){
 
     const routeAndOptions = useMemo(()=>{return { route: "posts/" + postId +"/reactions", options: {} }}, [postId]);
     const [currentPage, setCurrentPage] = useState(0);
-   const parameters = useMemo(()=>{return { page: currentPage }}, [currentPage]);
+    const parameters = useMemo(()=>{return { page: currentPage }}, [currentPage]);
     const {data, error, loading} = useApiFetch(routeAndOptions.route, routeAndOptions.options, isCollapsed, parameters);
     const [reactions, setReactions] = useState(new Map());
 
     useEffect(()=>{
-        setReactions(prev => {
+        (()=>{setReactions(prev => {
           const next = new Map(prev);
           (data?.content ?? []).forEach(reaction => next.set(reaction.id, reaction));
           return next;
-        });
+        });})();
        },[data])
 
     return (

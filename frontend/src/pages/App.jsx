@@ -1,12 +1,13 @@
 import { Outlet, useLocation } from 'react-router'
 import { useState } from 'react';
 import NavBar from '../components/NavBar'
+import extractUsernameFromJWT from '../utils/extractUsernameFromJWT';
 import '../main.css'
 
 function App() {
   const location = useLocation();
   const [isLogged, setIsLogged] = useState(!!localStorage.getItem('token'));
-  const [loggedUserUsername, setLoggedUserUsername] = useState();
+  const [loggedUserUsername, setLoggedUserUsername] = useState(localStorage.token ? extractUsernameFromJWT(localStorage.token) : null);
 
   return (
     <>

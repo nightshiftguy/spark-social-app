@@ -5,7 +5,6 @@ import com.nightguy.spark.auth.AuthenticationResponse;
 import com.nightguy.spark.user.Role;
 import com.nightguy.spark.user.User;
 import com.nightguy.spark.user.UserRepository;
-import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,7 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
 
-  public AuthenticationResponse register(@Valid AuthenticationRequest request) {
+  public AuthenticationResponse register(AuthenticationRequest request) {
     Optional<User> optionalUser = repository.findByUsername(request.getLogin());
     if (optionalUser.isPresent()) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "User with this login already exists");
@@ -35,7 +34,7 @@ public class AuthenticationService {
     }
   }
 
-  public AuthenticationResponse authenticate(@Valid AuthenticationRequest request) {
+  public AuthenticationResponse authenticate(AuthenticationRequest request) {
     try {
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));

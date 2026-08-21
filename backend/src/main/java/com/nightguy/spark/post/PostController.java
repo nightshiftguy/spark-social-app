@@ -1,6 +1,7 @@
 package com.nightguy.spark.post;
 
 import com.nightguy.spark.user.User;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ public class PostController {
 
   @PostMapping
   PostResponseDTO createPost(
-      @AuthenticationPrincipal User user, @RequestBody PostRequestDTO newPost) {
+      @AuthenticationPrincipal User user, @Valid @RequestBody PostRequestDTO newPost) {
     return postService.save(user, newPost);
   }
 
@@ -35,7 +36,7 @@ public class PostController {
   @PutMapping("/{id}")
   PostResponseDTO updatePost(
       @AuthenticationPrincipal User user,
-      @RequestBody PostRequestDTO newPost,
+      @Valid @RequestBody PostRequestDTO newPost,
       @PathVariable Long id) {
     return postService.updatePost(user, id, newPost);
   }
