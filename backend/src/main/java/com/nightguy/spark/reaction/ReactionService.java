@@ -28,7 +28,7 @@ public class ReactionService {
       User user, ReactionRequestDTO newReactionDto, Long postId) {
     // prevent user from reacting twice to same post
     if (reactionRepository.findByAuthorAndPost_Id(user, postId).isPresent()) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot react twice to the same post");
     }
 
     Reaction newReaction = reactionMapper.toEntity(newReactionDto);
@@ -81,6 +81,9 @@ public class ReactionService {
 
   @Transactional
   public void deleteReaction(User user, Long postId) {
+    if (reactionRepository.findByAuthorAndPost_Id(user, postId).isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "User didn't reacted to this post");
+    }
     reactionRepository.removeByPostIdAndAuthor(postId, user);
     postRepository.decrementLikeCount(postId);
   }

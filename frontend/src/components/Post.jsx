@@ -38,8 +38,8 @@ export default function Post( {post, loggedUserUsername, onEdit, onDelete} ){
             <p>Created at: {formattedDate}</p>
             <p>{post.textContent}</p>
             <img src={post.imageLink}></img>
-            <Comments postId={post.id}/>
-            <PostLikes postId={post.id} likeCount={post.likeCount}/>
+            <Comments postId={post.id} loggedUserUsername={loggedUserUsername}/>
+            <PostLikes postId={post.id} loggedUserUsername={loggedUserUsername} likeCount={post.likeCount}/>
         </div>
     </>
     );
