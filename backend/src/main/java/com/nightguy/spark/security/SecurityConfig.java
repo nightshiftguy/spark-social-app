@@ -51,7 +51,10 @@ public class SecurityConfig {
                         "/api/v1/reactions/**")
                     .permitAll()
                     .requestMatchers(
-                        "/api/v1/posts/**", "/api/v1/comments/**", "/api/v1/reactions/**")
+                        "/api/v1/posts/**",
+                        "/api/v1/comments/**",
+                        "/api/v1/reactions/**",
+                        "/api/v1/images/sign")
                     .hasAuthority(Role.USER.name())
                     .anyRequest()
                     .authenticated())
@@ -70,7 +73,8 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
     configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedMethods(
+        Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;

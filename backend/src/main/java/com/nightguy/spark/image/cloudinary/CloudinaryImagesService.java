@@ -1,7 +1,6 @@
 package com.nightguy.spark.image.cloudinary;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.api.signing.NotificationRequestSignatureVerifier;
 import com.cloudinary.utils.ObjectUtils;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
@@ -11,6 +10,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -25,20 +25,10 @@ public class CloudinaryImagesService {
   @Value("${CLOUDINARY_API_SECRET}")
   private String apiSecret;
 
-  @Value("${CLOUD_UPLOAD_LOCATION}")
-  private String cloudUploadLocation;
-
   @Value("${CLOUD_UPLOAD_FOLDER}")
   private String uploadFolder = "images";
 
-  @Value("${CLOUD_UPLOAD_PRESET}")
-  private String uploadPreset = "public-images";
-
-  @Value("${CLOUD_MAX_TIME_FOR_IMAGE_CONFIRMATION_SECONDS}")
-  private long secondsValidFor;
-
   private Cloudinary cloudinary;
-  private NotificationRequestSignatureVerifier verifier;
 
   @PostConstruct
   private void init() {
@@ -48,39 +38,33 @@ public class CloudinaryImagesService {
                 "cloud_name", cloudName,
                 "api_key", apiKey,
                 "api_secret", apiSecret));
-    verifier = new NotificationRequestSignatureVerifier(apiSecret);
   }
 
-  protected UUID getUUIDFromRequestString(String requestPublicId) {
-    // convert publicId (foldername/<UUID>) to just UUID: delete foldername.length (+1 to delete /)
-    return UUID.fromString(requestPublicId.substring(uploadFolder.length() + 1));
-  }
-
-  protected SignResponseDTO signRequest(UUID publicId) {
-    Map<String, Object> signParameters = new HashMap<>();
-    long timestampUnixTime = System.currentTimeMillis() / 1000L;
-    signParameters.put("folder", uploadFolder);
-    signParameters.put("timestamp", timestampUnixTime);
-    signParameters.put("upload_preset", uploadPreset);
-    signParameters.put("public_id", publicId.toString());
-    String signature = cloudinary.apiSignRequest(signParameters, apiSecret, 1);
-
-    return new SignResponseDTO(
-        cloudUploadLocation,
-        signature,
-        Long.toString(timestampUnixTime),
-        apiKey,
-        uploadFolder,
-        publicId.toString(),
-        uploadPreset);
+  public String saveImage(UUID publicId, MultipartFile image) throws IOException {
+    Map<String, Object> uploadParameters = new HashMap<>();
+    uploadParameters.put("folder", uploadFolder);
+    uploadParameters.put("public_id", publicId.toString());
+    uploadParameters.put("resource_type", "image");
+    uploadParameters.put("use_filename", true);
+    uploadParameters.put("unique_filename", true);
+    uploadParameters.put("overwrite", false);
+    Map uploadResult = cloudinary.uploader().upload(image.getBytes(), uploadParameters);
+    return (String) uploadResult.get("url");
   }
 
   protected void cloudinaryDeleteImage(UUID publicId) throws IOException {
     cloudinary.uploader().destroy(uploadFolder + "/" + publicId.toString(), ObjectUtils.emptyMap());
   }
 
-  protected boolean isConfirmationRequestValid(
-      String requestBody, String timestamp, String signature) {
-    return verifier.verifySignature(requestBody, timestamp, signature, secondsValidFor);
+  public String updateImage(UUID publicId, MultipartFile image) throws IOException {
+    Map<String, Object> uploadParameters = new HashMap<>();
+    uploadParameters.put("folder", uploadFolder);
+    uploadParameters.put("public_id", publicId.toString());
+    uploadParameters.put("resource_type", "image");
+    uploadParameters.put("use_filename", true);
+    uploadParameters.put("unique_filename", true);
+    uploadParameters.put("overwrite", true);
+    Map uploadResult = cloudinary.uploader().upload(image.getBytes(), uploadParameters);
+    return (String) uploadResult.get("url");
   }
 }

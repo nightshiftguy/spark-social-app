@@ -41,11 +41,13 @@ export function useApiFetch(route, options={}, dontFetchYet=false, requestParame
       }
     }
 
+    const isFormData = options.body instanceof FormData;
+
     try {
       const res = await fetch(API_URL + route + (()=>{return requestParameters !==null ? ("?" + new URLSearchParams(requestParameters).toString()) : ""})(), {
         ...options,
         headers: {
-          'Content-Type': 'application/json',
+          ...(!isFormData && { 'Content-Type': 'application/json' }),
           ...(token && { Authorization: `Bearer ${token}` }),
           ...(options.headers || {}),
         },

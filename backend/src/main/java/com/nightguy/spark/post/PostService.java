@@ -2,9 +2,10 @@ package com.nightguy.spark.post;
 
 import com.nightguy.spark.image.ImageUrl;
 import com.nightguy.spark.image.ImageUrlRepository;
+import com.nightguy.spark.image.cloudinary.ImagesService;
 import com.nightguy.spark.user.User;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Objects;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -21,6 +24,7 @@ public class PostService {
   private final PostRepository postRepository;
   private final ImageUrlRepository imageUrlRepository;
   private final PostMapper postMapper;
+  private final ImagesService imagesService;
 
   private ImageUrl findImageForUser(User user, String imageUrl) {
     ImageUrl image =
@@ -66,57 +70,54 @@ public class PostService {
     return postMapper.toDto(newPost);
   }
 
-  public PostResponseDTO save(User user, PostRequestDTO newPostDto) {
-    Post newPost = postMapper.toEntity(newPostDto);
+  @Transactional
+  public PostResponseDTO save(User user, String textContent, MultipartFile image)
+      throws IOException {
+    Post newPost = new Post();
+    newPost.setTextContent(textContent);
     newPost.setAuthor(user);
-
-    // check if image specified in link exists and belongs to user
-    if (newPostDto.imageLink() != null) {
-      ImageUrl image = findImageForUser(user, newPostDto.imageLink());
-
-      // check if image isn't attached to post
-      if (image.getPost() != null) {
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid image url");
-      }
-
+    if (image != null && !image.isEmpty()) {
+      ImageUrl newImage = imagesService.createImage(image, user);
       // update image
-      image.setPost(newPost);
-      newPost.setImageLink(image);
+      newImage.setPost(newPost);
+      newPost.setImageLink(newImage);
     }
 
     Post postResponse = postRepository.save(newPost);
     return postMapper.toDto(postResponse);
   }
 
-  public PostResponseDTO updatePost(User user, Long id, PostRequestDTO newPostDto) {
+  @Transactional
+  public PostResponseDTO updatePost(User user, Long id, String textContent, MultipartFile image)
+      throws IOException {
     // find post
-    Post oldPost =
+    Post post =
         postRepository
             .findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
     // throw error if user doesn't own the post
-    if (!oldPost.getAuthor().equals(user)) {
+    if (!post.getAuthor().equals(user)) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     // modify post
-    Post postEntity = postMapper.updateEntityFromDto(oldPost, newPostDto);
-
-    // check if image specified in link exists and belongs to user
-    if (newPostDto.imageLink() != null) {
-      ImageUrl image = findImageForUser(user, newPostDto.imageLink());
-
-      // check if post referred in image has same id as post to update
-      if (image.getPost() != null && !Objects.equals(image.getPost().getId(), id)) {
-        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid image url");
-      }
-
-      // update image
-      image.setPost(postEntity);
-      postEntity.setImageLink(image);
+    if (textContent != null && !textContent.isEmpty()) {
+      post.setTextContent(textContent);
     }
 
-    return postMapper.toDto(postRepository.save(postEntity));
+    if (image != null && !image.isEmpty()) {
+      // update image
+      if (post.getImageLink() != null) {
+        imagesService.updateImage(id, image);
+      } else {
+        ImageUrl newImage = imagesService.createImage(image, user);
+        // update image
+        newImage.setPost(post);
+        post.setImageLink(newImage);
+      }
+    }
+
+    return postMapper.toDto(postRepository.save(post));
   }
 
   public void deletePost(User user, Long id) {

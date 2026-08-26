@@ -1,12 +1,14 @@
 package com.nightguy.spark.post;
 
 import com.nightguy.spark.user.User;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import java.io.IOException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -15,9 +17,12 @@ public class PostController {
   private final PostService postService;
 
   @PostMapping
-  PostResponseDTO createPost(
-      @AuthenticationPrincipal User user, @Valid @RequestBody PostRequestDTO newPost) {
-    return postService.save(user, newPost);
+  public PostResponseDTO createPost(
+      @RequestParam("textContent") @NotBlank String textContent,
+      @RequestParam(value = "image", required = false) MultipartFile image,
+      @AuthenticationPrincipal User user)
+      throws IOException {
+    return postService.save(user, textContent, image);
   }
 
   @GetMapping
@@ -33,12 +38,14 @@ public class PostController {
     return postService.getPost(id);
   }
 
-  @PutMapping("/{id}")
+  @PatchMapping("/{id}")
   PostResponseDTO updatePost(
       @AuthenticationPrincipal User user,
-      @Valid @RequestBody PostRequestDTO newPost,
-      @PathVariable Long id) {
-    return postService.updatePost(user, id, newPost);
+      @RequestParam("textContent") String textContent,
+      @PathVariable Long id,
+      @RequestParam(value = "image", required = false) MultipartFile image)
+      throws IOException {
+    return postService.updatePost(user, id, textContent, image);
   }
 
   @DeleteMapping("/{id}")

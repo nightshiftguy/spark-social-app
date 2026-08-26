@@ -10,26 +10,18 @@ To run project on your machine clone the repo and follow below instructions for 
     CLOUDINARY_CLOUD_NAME=<cloud-name>
     CLOUDINARY_API_KEY=<api-key>
     CLOUDINARY_API_SECRET=<api-secret>
-    CLOUD_UPLOAD_LOCATION=https://api.cloudinary.com/v1_1/<my_cloud_name>/image/upload
     ```
-    - create upload preset and folder:
+    - create folder for images:
     ```
     CLOUD_UPLOAD_FOLDER=<images-folder>
-    CLOUD_UPLOAD_PRESET=<images-preset>
     ```
 
-5. Create ngrok account for recieving webhook notifications from cloudinary
-    - On their website go to domains and copy link to dotenv
-    ```
-    NGROK_TUNNEL_URL=https://your-name.ngrok-free.app
-    ```
-6. To run the application locally create run configuration for Spring Boot app or use commands below in backend folder:
+5. To run the application locally create run configuration for Spring Boot app or use commands below in backend folder:
 ```
 ./mvnw spring-boot:run       # macOS/Linux
 mvnw.cmd spring-boot:run     # Windows
 ```
 Use `generated-requests.http` for testing endpoints
-See app logs for usefull endpoints
 
 ### Set up Frontend ###
 1. Copy env.sample and name it .env
