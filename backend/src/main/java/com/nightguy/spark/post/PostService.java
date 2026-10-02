@@ -1,7 +1,6 @@
 package com.nightguy.spark.post;
 
 import com.nightguy.spark.image.ImageUrl;
-import com.nightguy.spark.image.ImageUrlRepository;
 import com.nightguy.spark.image.cloudinary.ImagesService;
 import com.nightguy.spark.user.User;
 import java.io.IOException;
@@ -20,27 +19,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @AllArgsConstructor
 public class PostService {
-  // TODO try to optimize to avoid N + 1 database requests (finding and then deleting)
   private final PostRepository postRepository;
-  private final ImageUrlRepository imageUrlRepository;
   private final PostMapper postMapper;
   private final ImagesService imagesService;
-
-  private ImageUrl findImageForUser(User user, String imageUrl) {
-    ImageUrl image =
-        imageUrlRepository
-            .findByImageLink(imageUrl)
-            .orElseThrow(
-                () ->
-                    new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Image with this url don't exist"));
-
-    // check if image belongs to user
-    if (!image.getOwner().equals(user)) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid image url");
-    }
-    return image;
-  }
 
   public Page<PostResponseDTO> getAllPosts(int page, String sortBy, String sortDirection) {
     // validate parameters
