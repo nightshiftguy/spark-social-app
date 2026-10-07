@@ -4,7 +4,7 @@ import getPayloadFromJWT from "./getPayloadFromJWT";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export function useApiFetch(route, options={}, dontFetchYet=false, requestParameters=null) {
+export function useApiFetch(route, options, dontFetchYet=false, requestParameters=null) {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
