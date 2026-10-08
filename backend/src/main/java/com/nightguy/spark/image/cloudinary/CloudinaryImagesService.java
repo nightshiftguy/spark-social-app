@@ -49,7 +49,7 @@ public class CloudinaryImagesService {
     uploadParameters.put("unique_filename", true);
     uploadParameters.put("overwrite", false);
     Map uploadResult = cloudinary.uploader().upload(image.getBytes(), uploadParameters);
-    return (String) uploadResult.get("url");
+    return (String) uploadResult.get("secure_url");
   }
 
   protected void cloudinaryDeleteImage(UUID publicId) throws IOException {
