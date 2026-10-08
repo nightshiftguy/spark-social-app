@@ -26,6 +26,8 @@ export function useApiFetch(route, options, dontFetchYet=false, requestParameter
     if(route===null) {
       setLoading(false);
       return;
+    } else {
+      setLoading(true)
     }
     const token = localStorage.getItem('token');
 
