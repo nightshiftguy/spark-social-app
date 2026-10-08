@@ -1,7 +1,53 @@
+import { useState, useEffect } from 'react';
+import { useApiFetch } from '../utils/api';
+import { useNavigate, useOutletContext } from 'react-router';
+import extractUsernameFromJWT from '../utils/extractUsernameFromJWT';
+
 function RegisterPage() {
+  const { setIsLogged, setLoggedUserUsername } = useOutletContext();
+  const [routeAndOptions, setRouteAndOptions] = useState({ route: null, options: {} });
+  const {data, error, loading, status} = useApiFetch(routeAndOptions.route, routeAndOptions.options);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if((!error && status===200)) {
+      if(!data.token){ throw new error("No token provided after user registered")}
+      const username = extractUsernameFromJWT(data.token);
+      setLoggedUserUsername(username);
+      localStorage.setItem('token', data.token);
+      setIsLogged(true);
+      navigate("/");
+    }
+  }, [error, status]);
+  
+  const submit = async (e) => {
+    e.preventDefault();
+    let newFormData = Object.fromEntries(new FormData(e.target));
+    const data = JSON.stringify(newFormData);
+    setRouteAndOptions({
+      route: 'auth/register',
+      options: {
+        method: 'POST',
+        body: data,
+      }
+    });
+  };
+
   return (
-    <h1>RegisterPage</h1>
-  )
+    <form onSubmit={submit} className='login-form'>
+      <h2>Register</h2>
+      <input name="login" placeholder="username" />
+      <p className="error">{error && error.login}</p>
+      <input name="password" type="password" placeholder="password" />
+      <p className="error">{error && error.password}</p>
+
+      <p className="error">{error && error.message}</p>
+      <button>Register</button>
+
+      <p className='email-info'>Already have account? Visit <a href="/register">Log in</a></p>
+      {loading && <p>Loading...</p>}
+    </form>
+  );
 }
 
 export default RegisterPage

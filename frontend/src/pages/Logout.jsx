@@ -9,5 +9,5 @@ export default function Logout() {
     localStorage.removeItem('token');
   });
 
-  return <Navigate to="/login" replace />;
+  return <Navigate to="/" replace />;
 }

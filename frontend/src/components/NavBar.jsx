@@ -10,6 +10,7 @@ export default function NavBar( {location, isLogged, loggedUserUsername} ){
         <div>
             <h1><Link to='/posts'>Spark</Link></h1>
             {!isLogged && <Link to='/login'>log in</Link>}
+            {!isLogged && <Link to='/register'>create account</Link>}
             {isLogged && <Link to='/logout'>log out</Link>}
             {isLogged && <Link to='/my-account'>{loggedUserUsername}</Link>}
         </div>
