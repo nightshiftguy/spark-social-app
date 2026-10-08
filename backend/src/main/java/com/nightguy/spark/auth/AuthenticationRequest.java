@@ -8,7 +8,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AuthenticationRequest {
-  @NotBlank private String login;
+  @NotBlank
+  @Size(max = 16, message = "username can't be longer than 16 characters")
+  private String login;
 
   @NotBlank
   @Size(min = 8, message = "must be at least 8 characters long")

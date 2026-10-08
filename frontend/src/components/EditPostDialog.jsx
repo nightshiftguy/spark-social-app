@@ -67,6 +67,7 @@ export default function EditPostDialog({ postToEdit, show, onClose, onUpdate}){
             <label htmlFor="image">{postToEdit?.imageLink ? "Override image" : "Add image"}</label>
             <input name="image" type="file" accept="image/png, image/jpeg"/>
             <p className="error">{imageError && imageError.message}</p>
+            <p className="error">{postError && postError.image}</p>
 
             <input name="textContent" placeholder="text content" defaultValue={postToEdit ? postToEdit.textContent : ""}/>
             <p className="error">{postError && postError.textContent}</p>
