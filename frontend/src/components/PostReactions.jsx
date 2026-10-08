@@ -66,7 +66,7 @@ export default function PostLikes({postId, likeCount, loggedUserUsername}){
             <>
             {loading && <p>Loading...</p>}
             {!error && !loading && [...reactions.values()].length === 0 && <p>No one reacted to this post</p>}
-            {!error && !loading && 
+            {!error && !loading && loggedUserUsername && 
             (
                 loggedUserReaction === null || loggedUserReaction === undefined
                 ? <button onClick={()=>createReaction(JSON.stringify({reaction :"LIKE"}))}>like</button>

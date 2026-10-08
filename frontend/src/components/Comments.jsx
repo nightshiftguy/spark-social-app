@@ -109,7 +109,7 @@ export default function Comments({postId, loggedUserUsername}){
                 <Comment key={comment.id} comment={comment} isOwnComment={isOwnComment} onDelete={deleteComment} onEdit={editComment} onEditCancel={cancelEditing} isEditing={isEditing} setIsEditing={setIsEditing} commentToEdit={commentToEdit} setCommentToEdit={setCommentToEdit}/>
             )}
             {error && <p>A network error was encountered: {error.message}</p>}
-            {!isEditing && <button onClick={()=>setIsEditing(true)}>create comment</button>}
+            {!isEditing && loggedUserUsername && <button onClick={()=>setIsEditing(true)}>create comment</button>}
             {isEditing && commentToEdit === null && 
                 <form onSubmit={submitNewCommentForm}>
                     <label htmlFor="textContent">Your comment</label>
