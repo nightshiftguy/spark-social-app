@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useApiFetch } from '../utils/api';
 import { useNavigate, useOutletContext } from 'react-router';
 import extractUsernameFromJWT from '../utils/extractUsernameFromJWT';
+import Logo from '../components/Logo';
+import './LoginAndRegister.css'
 
 function RegisterPage() {
   const { setIsLogged, setLoggedUserUsername } = useOutletContext();
@@ -33,21 +35,30 @@ function RegisterPage() {
     });
   };
 
-  return (
+  return (<div className='register-container'>
+    <Logo/>
+
     <form onSubmit={submit} className='login-form'>
       <h2>Register</h2>
-      <input name="login" placeholder="username" />
+      <div>
+        <label htmlFor="login">username</label>
+        <input name="login"/>
+      </div>
       <p className="error">{error && error.login}</p>
-      <input name="password" type="password" placeholder="password" />
+
+      <div>
+        <label htmlFor="password">password</label>
+        <input name="password" type="password" placeholder="password" />
+      </div>
       <p className="error">{error && error.password}</p>
 
-      <p className="error">{error && error.message}</p>
       <button>Register</button>
 
-      <p className='email-info'>Already have account? Visit <a href="/register">Log in</a></p>
-      {loading && <p>Loading...</p>}
+      <p className="error">{error && error.message}</p>
+      <p className='loading'>{loading && "Loading..."}</p>
     </form>
-  );
+    <p className='email-info'>Already have account? Visit <a href="/login">Log in</a></p>
+  </div>);    
 }
 
 export default RegisterPage

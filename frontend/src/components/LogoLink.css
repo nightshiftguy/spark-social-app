@@ -1,0 +1,23 @@
+.logo-link{
+    display:flex;
+    gap: 16px;
+    color: var(--text-h);
+    width:max-content;
+    padding: 5px;
+    border-radius: 5px;
+    align-items: center;
+}
+
+a.logo-link:hover{
+    text-decoration:none;
+    color:var(--a);
+    background-color: var(--accent-border);
+}
+
+.logo-link>h2{
+    color:inherit;
+}
+
+.logo-link-image{
+    width: 50px;
+}

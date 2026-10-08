@@ -59,23 +59,24 @@ export default function EditPostDialog({ postToEdit, show, onClose, onUpdate}){
 
   return (
         <dialog ref={dialogRef} onClose={onClose} >
-        <button onClick={onClose}>close</button>
+        <button onClick={onClose}>X</button>
         <form onSubmit={submit} className='post-form'>
             <h2>{postToEdit ? "Edit post" : "New post"}</h2>
 
             {postToEdit?.imageLink && <button onClick={deleteImage}>Delete image</button>}
             <label htmlFor="image">{postToEdit?.imageLink ? "Override image" : "Add image"}</label>
-            <input name="image" type="file" accept="image/png, image/jpeg"/>
+            <input name="image" type="file" accept="image/png, image/jpeg" />
             <p className="error">{imageError && imageError.message}</p>
             <p className="error">{postError && postError.image}</p>
 
-            <input name="textContent" placeholder="text content" defaultValue={postToEdit ? postToEdit.textContent : ""}/>
+            <label htmlFor="image">Text content</label>
+            <input name="textContent" defaultValue={postToEdit ? postToEdit.textContent : ""}/>
             <p className="error">{postError && postError.textContent}</p>
 
             <p className="error">{postError && postError.message}</p>
             <button>Submit</button>
 
-            {postLoading && <p>Loading...</p>}
+            <p className="loading">{postLoading && "Loading..."}</p>
         </form>
         </dialog>
     )

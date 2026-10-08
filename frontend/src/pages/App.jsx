@@ -2,7 +2,7 @@ import { Outlet, useLocation } from 'react-router'
 import { useState } from 'react';
 import NavBar from '../components/NavBar'
 import extractUsernameFromJWT from '../utils/extractUsernameFromJWT';
-import '../main.css'
+import './App.css'
 
 function App() {
   const location = useLocation();

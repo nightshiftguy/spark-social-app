@@ -1,0 +1,6 @@
+main.container{
+    padding: 20px;
+    margin:0 25%;
+    background-color: var(--accent-bg);
+    flex-grow: 1;
+}

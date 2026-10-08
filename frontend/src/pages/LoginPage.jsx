@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useApiFetch } from '../utils/api';
 import { useNavigate, useOutletContext } from 'react-router';
 import extractUsernameFromJWT from '../utils/extractUsernameFromJWT';
+import Logo from '../components/Logo';
+import './LoginAndRegister.css'
 
 function LoginPage() {
   const { setIsLogged, setLoggedUserUsername } = useOutletContext();
@@ -34,19 +36,30 @@ function LoginPage() {
   };
 
   return (
-    <form onSubmit={submit} className='login-form'>
+    <div className='login-container'>
+      <Logo/>
+
+      <form onSubmit={submit} className='login-form'>
       <h2>Log in</h2>
-      <input name="login" placeholder="username" />
+      <div>
+        <label htmlFor="login">username</label>
+        <input name="login"/>
+      </div>
       <p className="error">{error && error.login}</p>
-      <input name="password" type="password" placeholder="password" />
+
+      <div>
+        <label htmlFor="password">password</label>
+        <input name="password" type="password" placeholder="password" />
+      </div>
       <p className="error">{error && error.password}</p>
 
-      <p className="error">{error && error.message}</p>
       <button>Login</button>
 
-      <p className='email-info'>Don't have an account? Follow instructions at <a href="/register">Register</a></p>
-      {loading && <p>Loading...</p>}
+      <p className="error">{error && error.message}</p>
+      <p className='loading'>{loading && "Loading..."}</p>
     </form>
+    <p className='email-info'>Don't have an account? Follow instructions at <a href="/register">Register</a></p>
+    </div>
   );
 }
 

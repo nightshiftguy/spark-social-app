@@ -1,0 +1,14 @@
+.navbar{
+    
+    border-bottom:2px solid var(--accent-border);
+    display:flex;
+    justify-content: space-between;
+    padding: 0 5%;
+}
+
+
+.navbar .right{
+    align-items: center;
+    display:flex;
+    gap: 40px;
+}

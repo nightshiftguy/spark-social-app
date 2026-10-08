@@ -1,18 +1,21 @@
 import { Link } from "react-router";
+import LogoLink from "./LogoLink"
+import "./NavBar.css"
 
 export default function NavBar( {location, isLogged, loggedUserUsername} ){
-    //don't render navbar on register and login pages
-    if(location.pathname == "/register" || location.pathname == "/login"){
-        return;
-    }
+    let loginOrRegisterPage = location.pathname == "/register" || location.pathname == "/login";
 
     return (
-        <div>
-            <h1><Link to='/posts'>Spark</Link></h1>
-            {!isLogged && <Link to='/login'>log in</Link>}
-            {!isLogged && <Link to='/register'>create account</Link>}
-            {isLogged && <Link to='/logout'>log out</Link>}
-            {isLogged && <Link to='/my-account'>{loggedUserUsername}</Link>}
-        </div>
+        <nav className="navbar">
+            <div className="left">
+                <LogoLink/>
+            </div>
+            <div className="right">
+                {!loginOrRegisterPage && !isLogged && <Link to='/login'>log in</Link>}
+                {!loginOrRegisterPage && !isLogged && <Link to='/register'>create account</Link>}
+                {!loginOrRegisterPage && isLogged && <Link to='/logout'>log out</Link>}
+                {!loginOrRegisterPage && isLogged && <p>{loggedUserUsername}</p>}
+            </div>
+            </nav>
     )
 }

@@ -31,15 +31,26 @@ export default function Post( {post, loggedUserUsername, onEdit, onDelete} ){
 
     return (
     <>
-        <div className="postContainer">
-            {loggedUserUsername===post.author.username && <button onClick={deletePost}>delete post</button>}
-            {loggedUserUsername===post.author.username && <button onClick={()=>{onEdit(post)}}>edit post</button>}
-            <h3>{post.author.username}</h3>
-            <p>Created at: {formattedDate}</p>
-            <p>{post.textContent}</p>
-            <img src={post.imageLink}></img>
-            <Comments postId={post.id} loggedUserUsername={loggedUserUsername}/>
-            <PostLikes postId={post.id} loggedUserUsername={loggedUserUsername} likeCount={post.likeCount}/>
+        <div className="post-container">
+            {loggedUserUsername===post.author.username &&
+            <section>
+                <button onClick={()=>{onEdit(post)}}>edit post</button>
+                <button onClick={deletePost}>delete post</button>
+            </section>}
+            <section>
+                <section className="post-info">
+                    <h3>{post.author.username}</h3>
+                    <div>Created at: {formattedDate}</div>
+                </section>
+                <section className="post-content">
+                    <p>{post.textContent}</p>
+                    {post.imageLink && <img className="post-image" src={post.imageLink}></img>}
+                </section>
+            </section>
+            <section>
+                <Comments postId={post.id} loggedUserUsername={loggedUserUsername}/>
+                <PostLikes postId={post.id} loggedUserUsername={loggedUserUsername} likeCount={post.likeCount}/>
+            </section>
         </div>
     </>
     );

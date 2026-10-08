@@ -12,9 +12,8 @@ export function useApiFetch(route, options, dontFetchYet=false, requestParameter
   const [status, setStatus] = useState(null);
 
   const handleTokenExpiration = useCallback(() => {
-    console.warn("JWT Token expired redirecting to login page");
-    localStorage.removeItem('token');
-    navigate("/login");
+    console.warn("JWT Token expired");
+    navigate("/logout");
   }, [navigate]);
 
   useEffect(() => {

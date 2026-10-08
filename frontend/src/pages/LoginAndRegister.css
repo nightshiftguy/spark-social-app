@@ -1,0 +1,22 @@
+.login-container, .register-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+label::after{
+    content:": ";
+}
+
+.error{
+    height:1.5em;
+    color:var(--error);
+}
+
+.login-container > form, .register-container > form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}

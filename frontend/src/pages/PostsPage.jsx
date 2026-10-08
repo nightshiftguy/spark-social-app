@@ -52,7 +52,6 @@ function PostsPage() {
    
   return (
     <>
-      <h2>Posts</h2>
       {isLogged && <button onClick={()=>setIsEditPostDialogVisible(true)}>Create new post</button>}
       {!error && loading && <p>Loading...</p>}
       {[...posts.values()].map((post) => <Post key={post.id} post={post} loggedUserUsername={loggedUserUsername} onEdit={editPost} onDelete={deletePost}/>)}
