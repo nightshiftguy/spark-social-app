@@ -10,7 +10,6 @@ export default function Comments({postId, loggedUserUsername}){
     const [currentPage, setCurrentPage] = useState(0);
     const [parameters, setParameters] = useState({ page: currentPage });
 
-    const [isLastPage, setIsLastPage] = useState(null);
     const [routeAndOptions, setRouteAndOptions] = useState({ route: "posts/" + postId +"/comments", options: {} });
     const {data, status, error, loading} = useApiFetch(routeAndOptions.route, routeAndOptions.options, !hasBeenOpen, parameters);
     
@@ -35,7 +34,6 @@ export default function Comments({postId, loggedUserUsername}){
             }
             else {
                 (data?.content ?? []).forEach(comment => next.set(comment.id, comment));
-                setIsLastPage(data?.last);
             }
             return next;
         });
@@ -121,7 +119,7 @@ export default function Comments({postId, loggedUserUsername}){
             }
             {isEditing && commentToEdit === null && <button onClick={()=>{setIsEditing(false); setCommentToEdit(null)}}>Cancel editing</button>}
             <button onClick={() => setCollapsed(true)}>hide comments</button>
-            {!error && !loading && !isLastPage && <button onClick={loadMoreComments}>load more comments</button>}
+            {!error && !loading && data && !data?.last && <button onClick={loadMoreComments}>load more comments</button>}
             </>
         )}
         </>

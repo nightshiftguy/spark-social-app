@@ -9,7 +9,6 @@ export default function PostLikes({postId, likeCount, loggedUserUsername}){
     const [parameters, setParameters] = useState({ page: currentPage });
 
     const [routeAndOptions, setRouteAndOptions] = useState({ route: "posts/" + postId +"/reactions", options: {} });
-    const [isLastPage, setIsLastPage] = useState(null);
     const {data, status, error, loading} = useApiFetch(routeAndOptions.route, routeAndOptions.options, !hasBeenOpen, parameters);
     
     const [reactions, setReactions] = useState(new Map());
@@ -28,7 +27,6 @@ export default function PostLikes({postId, likeCount, loggedUserUsername}){
             }
             else {
                 (data?.content ?? []).forEach(reaction => next.set(reaction.id, reaction));
-                setIsLastPage(data?.last);
             }
             return next;
         });})();
@@ -76,7 +74,7 @@ export default function PostLikes({postId, likeCount, loggedUserUsername}){
             )}
             {!loading && [...reactions.values()].map((reaction) => <p key={reaction.id}>{reaction.author.username} {reaction.reaction}</p>)}
             {error && <p>A network error was encountered: {error.message}</p>}
-            {!error && !loading && !isLastPage && <button onClick={loadMoreReactions}>load more reactions</button>}
+            {!error && !loading && data && !data?.last && <button onClick={loadMoreReactions}>load more reactions</button>}
             <button onClick={() => setCollapsed(true)}>hide reactions</button>
             </>
         )}
