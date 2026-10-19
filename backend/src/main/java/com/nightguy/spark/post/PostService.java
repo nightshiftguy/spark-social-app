@@ -40,7 +40,7 @@ public class PostService {
     Sort sort = Sort.by(direction, sortBy);
     Pageable pageable = PageRequest.of(page, 10, sort);
 
-    return postRepository.findAll(pageable).map(postMapper::toDto);
+    return postRepository.findAllPosts(pageable).map(postMapper::toDto);
   }
 
   public PostResponseDTO getPost(Long id) {
@@ -112,6 +112,6 @@ public class PostService {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
     // delete post
-    postRepository.deleteById(id);
+    postRepository.delete(post);
   }
 }

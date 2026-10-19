@@ -59,7 +59,7 @@ public class ReactionService {
     // sort by author
     Sort sort = Sort.by(Sort.Direction.ASC, "author");
     Pageable pageable = PageRequest.of(pageNumber, 5, sort);
-    return reactionRepository.findAllByPost_Id(postId, pageable).map(reactionMapper::toDto);
+    return reactionRepository.findAllByPostId(postId, pageable).map(reactionMapper::toDto);
   }
 
   public Page<ReactionResponseDTO> getAllReactionsForUser(User user, int pageNumber) {
