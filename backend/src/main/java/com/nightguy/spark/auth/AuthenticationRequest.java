@@ -13,6 +13,6 @@ public class AuthenticationRequest {
   private String login;
 
   @NotBlank
-  @Size(min = 8, message = "must be at least 8 characters long")
+  @Size(min = 8, max = 72, message = "must be from 8 to 72 characters long")
   private String password;
 }
