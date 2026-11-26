@@ -37,13 +37,13 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
       String jsonResponse =
           """
-                {
-                    "status": %s,
-                    "error": "Too Many Requests",
-                    "message": "You have exhausted your API Request Quota",
-                    "retryAfterSeconds": %s
-                }
-                """
+          {
+              "status": %s,
+              "error": "Too Many Requests",
+              "message": "You have exhausted your API Request Quota",
+              "retryAfterSeconds": %s
+          }
+          """
               .formatted(HttpStatus.TOO_MANY_REQUESTS.value(), waitForRefill);
 
       response.getWriter().write(jsonResponse);

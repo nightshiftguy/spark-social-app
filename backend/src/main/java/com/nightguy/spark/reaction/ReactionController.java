@@ -36,7 +36,7 @@ public class ReactionController {
     return reactionService.updateReaction(user, newReaction, postId);
   }
 
-  @DeleteMapping()
+  @DeleteMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
   void deleteReaction(@AuthenticationPrincipal User user, @PathVariable Long postId) {
     reactionService.deleteReaction(user, postId);

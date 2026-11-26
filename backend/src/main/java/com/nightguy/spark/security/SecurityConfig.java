@@ -39,25 +39,24 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) {
     http.csrf(AbstractHttpConfigurer::disable)
-        .cors((cors) -> cors.configurationSource(corsConfigurationSource()))
-        .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers("/api/v1/auth/**", "/webhooks/**")
-                    .permitAll()
-                    .requestMatchers(
-                        HttpMethod.GET,
-                        "/api/v1/posts/**",
-                        "/api/v1/comments/**",
-                        "/api/v1/reactions/**")
-                    .permitAll()
-                    .requestMatchers(
-                        "/api/v1/posts/**",
-                        "/api/v1/comments/**",
-                        "/api/v1/reactions/**",
-                        "/api/v1/images/sign")
-                    .hasAuthority(Role.USER.name())
-                    .anyRequest()
-                    .authenticated())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(auth ->
+            auth.requestMatchers("/api/v1/auth/**", "/webhooks/**")
+                .permitAll()
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/v1/posts/**",
+                    "/api/v1/comments/**",
+                    "/api/v1/reactions/**")
+                .permitAll()
+                .requestMatchers(
+                    "/api/v1/posts/**",
+                    "/api/v1/comments/**",
+                    "/api/v1/reactions/**",
+                    "/api/v1/images/sign")
+                .hasAuthority(Role.USER.name())
+                .anyRequest()
+                .authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider())

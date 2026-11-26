@@ -43,9 +43,8 @@ public class ImagesService {
     ImageUrl imageUrl =
         imageUrlRepository
             .findByPostId(postId)
-            .orElseThrow(
-                () ->
-                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find image to edit"));
+            .orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot find image to edit"));
     String imageLink = cloudinaryImagesService.updateImage(imageUrl.getPublicId(), image);
     imageUrl.setImageLink(imageLink);
     imageUrlRepository.save(imageUrl);

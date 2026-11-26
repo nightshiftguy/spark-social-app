@@ -28,10 +28,10 @@ public class PostService {
     String[] validSortCategories = {"creationTimestamp", "likeCount"};
     String[] validSortDirection = {"asc", "desc"};
     if (page < 0) throw new IllegalArgumentException("Invalid request param page");
-    if (Arrays.stream(validSortCategories).noneMatch((s) -> s.equals(sortBy))) {
+    if (Arrays.stream(validSortCategories).noneMatch(s -> s.equals(sortBy))) {
       throw new IllegalArgumentException("Invalid request param sortBy");
     }
-    if (Arrays.stream(validSortDirection).noneMatch((s) -> s.equalsIgnoreCase(sortDirection))) {
+    if (Arrays.stream(validSortDirection).noneMatch(s -> s.equalsIgnoreCase(sortDirection))) {
       throw new IllegalArgumentException("Invalid request param sortDirection");
     }
 
